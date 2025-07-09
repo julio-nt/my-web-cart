@@ -1,9 +1,7 @@
 import { useMoment } from '@ntdsk/react-ui';
 
 export type CartItem = { name: string; price: number; quantity: number };
-
 export type Cart = { id: number; item: CartItem[] };
-
 type LocalStorageFields = 'session' | 'name' | 'cart';
 
 type LocalStorage = {
@@ -12,47 +10,48 @@ type LocalStorage = {
   cart: Cart[];
 };
 
-type GetItemResult = LocalStorage | Date | string | { id: number; item: CartItem[] }[] | undefined;
+type GetItemResult = LocalStorage | Date | string | Cart[] | undefined;
 
 const useLocalStorage = () => {
   const { momentFn } = useMoment();
 
   const getItem = (key?: LocalStorageFields): GetItemResult => {
     const item = localStorage.getItem('my_web_cart');
-    const itemParsed: LocalStorage = item ? JSON.parse(item) : null;
-    if (!key || !itemParsed) return itemParsed;
-    const itemToReturn = itemParsed[key];
-    return itemToReturn;
+    const parsed: LocalStorage = item ? JSON.parse(item) : null;
+    if (!key || !parsed) return parsed;
+    return parsed[key];
   };
 
-  const setItem = ({ key, value }: { key: LocalStorageFields; value: string | Date | CartItem[] }) => {
-    const localData = getItem();
+  const setItem = ({ key, value }: { key: LocalStorageFields; value: string | Date | Cart[] }) => {
+    const current = (getItem() as LocalStorage) || { session: new Date(), cart: [] };
+    const updated = { ...current, [key]: value };
+    localStorage.setItem('my_web_cart', JSON.stringify(updated));
   };
 
-  const saveCartItem = (newCart: CartItem, group?: number) => {
-    const cartList = getItem('cart') ? (getItem('cart') as Cart[]) : [];
-    const currentCart = cartList.find((cart) => cart.id === group);
-    if (!currentCart || currentCart.item?.length === 0) {
-      return;
+  const saveCartItem = (newItem: CartItem, groupId: number) => {
+    const cartList = (getItem('cart') as Cart[]) || [];
+    const existingGroup = cartList.find((c) => c.id === groupId);
+
+    if (existingGroup) {
+      const existingItemIndex = existingGroup.item.findIndex((i) => i.name === newItem.name);
+      if (existingItemIndex !== -1) {
+        existingGroup.item[existingItemIndex] = newItem;
+      } else {
+        existingGroup.item.push(newItem);
+      }
+    } else {
+      cartList.push({ id: groupId, item: [newItem] });
     }
 
-    currentCart.item?.map((cart) => {
-      if (cart.name === newCart.name) {
-        return newCart;
-      }
-      return cart;
-    });
+    setItem({ key: 'cart', value: cartList });
   };
 
   const isSessionExpired = () => {
     const sessionTimeRaw = getItem('session') as Date;
     if (!sessionTimeRaw) return true;
-
     const sessionTime = momentFn(sessionTimeRaw);
     const currentTime = momentFn();
-
-    const diffInDays = currentTime.diff(sessionTime, 'days');
-    return diffInDays >= 7;
+    return currentTime.diff(sessionTime, 'days') >= 7;
   };
 
   return { isSessionExpired, getItem, setItem, saveCartItem };

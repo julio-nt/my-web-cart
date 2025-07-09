@@ -1,8 +1,8 @@
 import { useMoment } from '@ntdsk/react-ui';
 
-type CartItem = { name: string; price: number; quantity: number };
+export type CartItem = { name: string; price: number; quantity: number };
 
-type Cart = { id: number; item: CartItem[] };
+export type Cart = { id: number; item: CartItem[] };
 
 type LocalStorageFields = 'session' | 'name' | 'cart';
 
@@ -55,7 +55,7 @@ const useLocalStorage = () => {
     return diffInDays >= 7;
   };
 
-  return { isSessionExpired, getItem };
+  return { isSessionExpired, getItem, setItem, saveCartItem };
 };
 
 export default useLocalStorage;

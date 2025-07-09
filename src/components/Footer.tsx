@@ -12,17 +12,17 @@ const Footer = () => {
       <div className="flex items-center gap-2">
         <img src={logo} alt="" width={25} height={20} className="object-contain" />
         <a href="https://nautidesk.com" target="_blank" rel="noopener noreferrer">
-          <span className="hover:underline underline-offset-2">nautidesk © 2025</span>
+          <span className="hover:underline underline-offset-2">nautidesk © {new Date().getFullYear()}</span>
         </a>
       </div>
-      <div className="flex gap-4">
+      {/* <div className="flex gap-4">
         <a href="https://nautidesk.com/privacy" target="_blank" rel="noopener noreferrer">
           <span className="hover:underline underline-offset-2">Política de Privacidade</span>
         </a>
         <a href="https://nautidesk.com/terms" target="_blank" rel="noopener noreferrer">
           <span className="hover:underline underline-offset-2">Termos</span>
         </a>
-      </div>
+      </div> */}
     </div>
   );
 };

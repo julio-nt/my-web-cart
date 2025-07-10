@@ -1,7 +1,8 @@
 import useLocalStorage, { Cart, CartItem } from '../hooks/useLocalStorage';
-import { AppButton, AppDeleteWarning, AppTable } from '@ntdsk/react-ui';
+import { AppButton, AppTable, ControlledText, normalizeText } from '@ntdsk/react-ui';
 import { useState } from 'react';
 import NewItemForm from './NewItemForm';
+import { useForm } from 'react-hook-form';
 
 const MainContent = () => {
   const { getItem, saveCartItem, removeCartItem, resetCart } = useLocalStorage();
@@ -11,7 +12,14 @@ const MainContent = () => {
   const cartGroups = (getItem('cart') as Cart[]) || [];
   const currentCart = cartGroups.length > 0 ? cartGroups[0] : null;
 
-  console.log('Current Cart:', currentCart);
+  const filter = useForm({
+    defaultValues: {
+      name: '',
+    },
+  });
+
+  const filteredCartItems = currentCart?.item.filter((item) => normalizeText(item.name).includes(normalizeText(filter.watch('name')))) || [];
+  const orderedCartItems = filteredCartItems.sort((a, b) => a.name.localeCompare(b.name));
 
   const handleQuantityChange = (item: CartItem, increment: boolean) => {
     const newQuantity = item.quantity + (increment ? 1 : -1);
@@ -43,9 +51,10 @@ const MainContent = () => {
       <h1 className="text-3xl font-semibold">My Web Cart</h1>
       <AppButton label="Iniciar Novo Carrinho" style={{ width: 180 }} onClick={handleResetCart} />
       <AppButton label="Adicionar Item" style={{ width: 180, marginLeft: 'auto' }} onClick={() => setOpenModal(true)} />
+      <ControlledText label="Pesquisar" name="name" control={filter.control} />
       <AppTable
         key={updateKey}
-        data={currentCart?.item || []}
+        data={orderedCartItems || []}
         columns={[
           { header: 'Nome', accessor: 'name', align: 'center' },
           { header: 'Preço', accessor: 'price', align: 'center', type: 'currency' },
@@ -74,19 +83,14 @@ const MainContent = () => {
             accessor: '',
             align: 'center',
             cell: (row: CartItem) => (
-              <span
-                className="text-red-500 hover:underline underline-offset-2 cursor-pointer"
-                onClick={() => handleRemoveItem(row)}
-              >
+              <span className="text-red-500 hover:underline underline-offset-2 cursor-pointer" onClick={() => handleRemoveItem(row)}>
                 Remover
               </span>
             ),
           },
         ]}
       />
-      <p className="text-xl font-semibold self-start">
-        Total: R$ {currentCart?.item.reduce((acc, curr) => acc + curr.price * curr.quantity, 0).toFixed(2) || '0,00'}
-      </p>
+      <p className="text-xl font-semibold self-start">Total: R$ {currentCart?.item.reduce((acc, curr) => acc + curr.price * curr.quantity, 0).toFixed(2) || '0,00'}</p>
       <NewItemForm open={openModal} onClose={() => setOpenModal(false)} />
     </div>
   );

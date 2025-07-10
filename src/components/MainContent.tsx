@@ -4,7 +4,7 @@ import { useState } from 'react';
 import NewItemForm from './NewItemForm';
 
 const MainContent = () => {
-  const { getItem, saveCartItem } = useLocalStorage();
+  const { getItem, saveCartItem, removeCartItem } = useLocalStorage();
   const [openModal, setOpenModal] = useState(false);
   const [updateKey, setUpdateKey] = useState(0);
 
@@ -26,7 +26,11 @@ const MainContent = () => {
     );
 
     setUpdateKey((prev) => prev + 1);
-    // window.location.reload(); // força atualização da UI
+  };
+
+  const handleRemoveItem = (item: CartItem) => {
+    removeCartItem({ key: 'cart', name: item.name, groupId: currentCart?.id || 1 });
+    setUpdateKey((prev) => prev + 1);
   };
 
   return (
@@ -39,7 +43,7 @@ const MainContent = () => {
         data={currentCart?.item || []}
         columns={[
           { header: 'Nome', accessor: 'name', align: 'center' },
-          { header: 'Preço', accessor: 'price', align: 'center' },
+          { header: 'Preço', accessor: 'price', align: 'center', type: 'currency' },
           {
             header: 'Quantidade',
             accessor: 'quantity',
@@ -65,11 +69,14 @@ const MainContent = () => {
             accessor: '',
             align: 'center',
             cell: (row: CartItem) => (
-              <span className="text-red-500 hover:underline underline-offset-2 cursor-pointer">Remover</span>
+              <span className="text-red-500 hover:underline underline-offset-2 cursor-pointer" onClick={() => handleRemoveItem(row)}>
+                Remover
+              </span>
             ),
           },
         ]}
       />
+      <p>Total: R$ {currentCart?.item.reduce((acc, curr) => acc + curr.price * curr.quantity, 0).toFixed(2)}</p>
       <NewItemForm open={openModal} onClose={() => setOpenModal(false)} />
     </div>
   );

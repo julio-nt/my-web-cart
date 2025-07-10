@@ -46,6 +46,24 @@ const useLocalStorage = () => {
     setItem({ key: 'cart', value: cartList });
   };
 
+  const removeCartItem = ({ key, name, groupId }: { key: LocalStorageFields; name: string; groupId: number }) => {
+    const cartList = (getItem('cart') as Cart[]) || [];
+    const existingGroupIndex = cartList.findIndex((c) => c.id === groupId);
+
+    if (existingGroupIndex !== -1) {
+      const group = cartList[existingGroupIndex];
+      const updatedItems = group.item.filter((item) => item.name !== name);
+
+      if (updatedItems.length > 0) {
+        cartList[existingGroupIndex] = { ...group, item: updatedItems };
+      } else {
+        cartList.splice(existingGroupIndex, 1);
+      }
+
+      setItem({ key: 'cart', value: cartList });
+    }
+  };
+
   const isSessionExpired = () => {
     const sessionTimeRaw = getItem('session') as Date;
     if (!sessionTimeRaw) return true;
@@ -54,7 +72,7 @@ const useLocalStorage = () => {
     return currentTime.diff(sessionTime, 'days') >= 7;
   };
 
-  return { isSessionExpired, getItem, setItem, saveCartItem };
+  return { isSessionExpired, getItem, setItem, saveCartItem, removeCartItem };
 };
 
 export default useLocalStorage;

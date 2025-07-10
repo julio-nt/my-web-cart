@@ -64,6 +64,11 @@ const useLocalStorage = () => {
     }
   };
 
+  const resetCart = () => {
+    setItem({ key: 'cart', value: [] });
+    setItem({ key: 'session', value: new Date() });
+  };
+
   const isSessionExpired = () => {
     const sessionTimeRaw = getItem('session') as Date;
     if (!sessionTimeRaw) return true;
@@ -72,7 +77,7 @@ const useLocalStorage = () => {
     return currentTime.diff(sessionTime, 'days') >= 7;
   };
 
-  return { isSessionExpired, getItem, setItem, saveCartItem, removeCartItem };
+  return { isSessionExpired, getItem, setItem, saveCartItem, removeCartItem, resetCart };
 };
 
 export default useLocalStorage;

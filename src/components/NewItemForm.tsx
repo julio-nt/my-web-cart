@@ -3,7 +3,12 @@ import { AppButton, AppModal, ControlledText } from '@ntdsk/react-ui';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-const NewItemForm = ({ open, onClose }: any) => {
+interface IProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+const NewItemForm = ({ open, onClose }: IProps) => {
   const { saveCartItem } = useLocalStorage();
   const [openModal, setOpenModal] = useState(open);
 
@@ -35,10 +40,15 @@ const NewItemForm = ({ open, onClose }: any) => {
         price,
         quantity,
       },
-      1 // grupo do carrinho
+      1
     );
 
+    handleClose();
+  };
+
+  const handleClose = () => {
     onClose();
+    form.reset();
   };
 
   return (

@@ -48,10 +48,10 @@ const MainContent = () => {
 
   return (
     <div className="flex flex-col gap-4 items-center w-full max-w-[1200px] mx-auto py-8 px-4">
-      <h1 className="text-3xl font-semibold">My Web Cart</h1>
+      <h1 className="text-3xl font-semibold dark:text-white">My Web Cart</h1>
       <AppButton label="Iniciar Novo Carrinho" style={{ width: 180 }} onClick={handleResetCart} />
       <AppButton label="Adicionar Item" style={{ width: 180, marginLeft: 'auto' }} onClick={() => setOpenModal(true)} />
-      <ControlledText label="Pesquisar" name="name" control={filter.control} />
+      <ControlledText label="Pesquisar" name="name" control={filter.control} containerClassName="dark:text-gray-200 mr-auto" className="dark:text-gray-200 dark:bg-gray-700 border border-gray-400 dark:border-none" />
       <AppTable
         key={updateKey}
         data={orderedCartItems || []}
@@ -64,10 +64,10 @@ const MainContent = () => {
             align: 'center',
             cell: (row: CartItem) => {
               return (
-                <div className="flex gap-2 justify-center">
-                  <AppButton label="-" style={{ width: 50 }} onClick={() => handleQuantityChange(row, false)} />
+                <div className="flex gap-2 justify-around">
+                  <AppButton label="-" style={{ width: 35 }} onClick={() => handleQuantityChange(row, false)} />
                   <span className="mx-2">{row?.quantity}</span>
-                  <AppButton label="+" style={{ width: 50 }} onClick={() => handleQuantityChange(row, true)} />
+                  <AppButton label="+" style={{ width: 35 }} onClick={() => handleQuantityChange(row, true)} />
                 </div>
               );
             },
@@ -90,7 +90,7 @@ const MainContent = () => {
           },
         ]}
       />
-      <p className="text-xl font-semibold self-start">Total: R$ {currentCart?.item.reduce((acc, curr) => acc + curr.price * curr.quantity, 0).toFixed(2) || '0,00'}</p>
+      <p className="text-xl font-semibold self-start dark:text-gray-200">Total: R$ {currentCart?.item.reduce((acc, curr) => acc + curr.price * curr.quantity, 0).toFixed(2) || '0,00'}</p>
       <NewItemForm open={openModal} onClose={() => setOpenModal(false)} />
     </div>
   );

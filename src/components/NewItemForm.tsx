@@ -1,3 +1,4 @@
+import { lang } from "../lang";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { AppButton, AppModal, ControlledText } from "@ntdsk/react-ui";
 import { useEffect, useState } from "react";
@@ -9,7 +10,7 @@ interface IProps {
 }
 
 const NewItemForm = ({ open, onClose }: IProps) => {
-  const { saveCartItem } = useLocalStorage();
+  const { saveCartItem, getItem } = useLocalStorage();
   const [openModal, setOpenModal] = useState(open);
 
   const form = useForm({
@@ -56,19 +57,37 @@ const NewItemForm = ({ open, onClose }: IProps) => {
   return (
     <AppModal
       className="bg-white dark:bg-gray-800 dark:text-white sm:w-xs md:w-sm"
-      header="Novo Item"
+      header={lang.start_new.button[getItem("language") as "pt" | "en"]}
       open={openModal}
       onHide={() => setOpenModal(false)}
       closable={false}
     >
       <form className="space-y-4">
-        <ControlledText label="Nome do Item" name="item" control={form.control} className={inputClassName} />
-        <ControlledText label="Preço" name="price" control={form.control} type="currency" className={inputClassName} />
-        <ControlledText label="Quantidade" name="quantity" control={form.control} onlyNumber maxLength={4} className={inputClassName} />
+        <ControlledText
+          label={lang.add_new.fields.name[getItem("language") as "pt" | "en"]}
+          name="item"
+          control={form.control}
+          className={inputClassName}
+        />
+        <ControlledText
+          label={lang.add_new.fields.price[getItem("language") as "pt" | "en"]}
+          name="price"
+          control={form.control}
+          type="currency"
+          className={inputClassName}
+        />
+        <ControlledText
+          label={lang.add_new.fields.quantity[getItem("language") as "pt" | "en"]}
+          name="quantity"
+          control={form.control}
+          onlyNumber
+          maxLength={4}
+          className={inputClassName}
+        />
         <p>Total: R$ {totalPrice?.toFixed(2) || "0,00"}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <AppButton label="Fechar" className="bg-red-600" onClick={onClose} />
-          <AppButton label="Salvar" className="bg-green-600" onClick={handleSave} />
+          <AppButton label={lang.cancel[getItem("language") as "pt" | "en"]} className="bg-red-600" onClick={onClose} />
+          <AppButton label={lang.confirm[getItem("language") as "pt" | "en"]} className="bg-green-600" onClick={handleSave} />
         </div>
       </form>
     </AppModal>

@@ -1,14 +1,15 @@
-import { useMoment } from '@ntdsk/react-ui';
+import { useMoment } from "@ntdsk/react-ui";
 
 export type CartItem = { name: string; price: number; quantity: number };
 export type Cart = { id: number; item: CartItem[] };
-type LocalStorageFields = 'session' | 'name' | 'cart' | 'theme';
+type LocalStorageFields = "session" | "name" | "cart" | "theme" | "language";
 
 type LocalStorage = {
   session: Date;
   name?: string;
   cart: Cart[];
-  theme?: 'light' | 'dark';
+  theme?: "light" | "dark";
+  language?: "en" | "pt";
 };
 
 type GetItemResult = LocalStorage | Date | string | Cart[] | undefined;
@@ -17,7 +18,7 @@ const useLocalStorage = () => {
   const { momentFn } = useMoment();
 
   const getItem = (key?: LocalStorageFields): GetItemResult => {
-    const item = localStorage.getItem('my_web_cart');
+    const item = localStorage.getItem("my_web_cart");
     const parsed: LocalStorage = item ? JSON.parse(item) : null;
     if (!key || !parsed) return parsed;
     return parsed[key];
@@ -26,11 +27,11 @@ const useLocalStorage = () => {
   const setItem = ({ key, value }: { key: LocalStorageFields; value: string | Date | Cart[] }) => {
     const current = (getItem() as LocalStorage) || { session: new Date(), cart: [] };
     const updated = { ...current, [key]: value };
-    localStorage.setItem('my_web_cart', JSON.stringify(updated));
+    localStorage.setItem("my_web_cart", JSON.stringify(updated));
   };
 
   const saveCartItem = (newItem: CartItem, groupId: number) => {
-    const cartList = (getItem('cart') as Cart[]) || [];
+    const cartList = (getItem("cart") as Cart[]) || [];
     const existingGroup = cartList.find((c) => c.id === groupId);
 
     if (existingGroup) {
@@ -44,11 +45,11 @@ const useLocalStorage = () => {
       cartList.push({ id: groupId, item: [newItem] });
     }
 
-    setItem({ key: 'cart', value: cartList });
+    setItem({ key: "cart", value: cartList });
   };
 
   const removeCartItem = ({ key, name, groupId }: { key: LocalStorageFields; name: string; groupId: number }) => {
-    const cartList = (getItem('cart') as Cart[]) || [];
+    const cartList = (getItem("cart") as Cart[]) || [];
     const existingGroupIndex = cartList.findIndex((c) => c.id === groupId);
 
     if (existingGroupIndex !== -1) {
@@ -61,21 +62,21 @@ const useLocalStorage = () => {
         cartList.splice(existingGroupIndex, 1);
       }
 
-      setItem({ key: 'cart', value: cartList });
+      setItem({ key: "cart", value: cartList });
     }
   };
 
   const resetCart = () => {
-    setItem({ key: 'cart', value: [] });
-    setItem({ key: 'session', value: new Date() });
+    setItem({ key: "cart", value: [] });
+    setItem({ key: "session", value: new Date() });
   };
 
   const isSessionExpired = () => {
-    const sessionTimeRaw = getItem('session') as Date;
+    const sessionTimeRaw = getItem("session") as Date;
     if (!sessionTimeRaw) return true;
     const sessionTime = momentFn(sessionTimeRaw);
     const currentTime = momentFn();
-    return currentTime.diff(sessionTime, 'days') >= 7;
+    return currentTime.diff(sessionTime, "days") >= 7;
   };
 
   return { isSessionExpired, getItem, setItem, saveCartItem, removeCartItem, resetCart };

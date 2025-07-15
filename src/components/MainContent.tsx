@@ -4,6 +4,7 @@ import { useState } from "react";
 import NewItemForm from "./NewItemForm";
 import { useForm } from "react-hook-form";
 import ConfirmationDialog from "./ConfirmationDialog";
+import { lang } from "../lang";
 
 const MainContent = () => {
   const { getItem, saveCartItem, removeCartItem, resetCart } = useLocalStorage();
@@ -54,10 +55,14 @@ const MainContent = () => {
   return (
     <div className="flex flex-col gap-4 items-center w-full max-w-[1200px] mx-auto py-8 px-4">
       <h1 className="text-3xl font-semibold dark:text-white">My Web Cart</h1>
-      <AppButton label="Iniciar Novo Carrinho" style={{ width: 180 }} onClick={() => setOpenConfirmation(true)} />
-      <AppButton label="Adicionar Item" style={{ width: 180, marginLeft: "auto" }} onClick={() => setOpenForm(true)} />
+      <AppButton label={lang.start_new.button[getItem("language") as "pt" | "en"]} style={{ width: 180 }} onClick={() => setOpenConfirmation(true)} />
+      <AppButton
+        label={lang.add_new.button[getItem("language") as "pt" | "en"]}
+        style={{ width: 180, marginLeft: "auto" }}
+        onClick={() => setOpenForm(true)}
+      />
       <ControlledText
-        label="Pesquisar"
+        label={lang.search.label[getItem("language") as "pt" | "en"]}
         name="name"
         control={filter.control}
         containerClassName="dark:text-gray-200 mr-auto"
@@ -69,10 +74,10 @@ const MainContent = () => {
         tableContentClassName="dark:bg-gray-700 dark:text-gray-200"
         stripeClassName="dark:bg-gray-600 dark:text-gray-200"
         columns={[
-          { header: "Nome", accessor: "name", align: "center" },
-          { header: "Preço", accessor: "price", align: "center", type: "currency" },
+          { header: lang.table.name[getItem("language") as "pt" | "en"], accessor: "name", align: "center" },
+          { header: lang.table.price[getItem("language") as "pt" | "en"], accessor: "price", align: "center", type: "currency" },
           {
-            header: "Quantidade",
+            header: lang.table.quantity[getItem("language") as "pt" | "en"],
             accessor: "quantity",
             align: "center",
             cell: (row: CartItem) => {
@@ -97,7 +102,7 @@ const MainContent = () => {
             align: "center",
             cell: (row: CartItem) => (
               <span className="text-red-700 hover:underline underline-offset-2 cursor-pointer" onClick={() => handleRemoveItem(row)}>
-                Remover
+                {lang.table.remove[getItem("language") as "pt" | "en"]}
               </span>
             ),
           },

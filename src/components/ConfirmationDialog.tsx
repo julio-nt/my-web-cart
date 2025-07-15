@@ -1,3 +1,5 @@
+import useLocalStorage from "../hooks/useLocalStorage";
+import { lang } from "../lang";
 import { AppButton, AppModal } from "@ntdsk/react-ui";
 
 interface IProps {
@@ -7,18 +9,20 @@ interface IProps {
 }
 
 const ConfirmationDialog = ({ openModal, setOpenModal, handleConfirm }: IProps) => {
+  const { getItem } = useLocalStorage();
+
   return (
     <AppModal
       className="bg-white dark:bg-gray-800 dark:text-white sm:w-xs md:w-sm"
-      header="Iniciar Novo Carrinho"
+      header={lang.start_new.button[getItem("language") as "pt" | "en"]}
       open={openModal}
       onHide={() => setOpenModal(false)}
       closable={false}
     >
-      <p>Tem certeza que deseja apagar o carrinho?</p>
+      <p>{lang.start_new.description[getItem("language") as "pt" | "en"]}</p>
       <div className="flex justify-end mt-4">
-        <AppButton label="Cancelar" onClick={() => setOpenModal(false)} className="bg-red-600" />
-        <AppButton label="Confirmar" onClick={handleConfirm} className="ml-2 bg-green-600" />
+        <AppButton label={lang.cancel[getItem("language") as "pt" | "en"]} onClick={() => setOpenModal(false)} className="bg-red-600" />
+        <AppButton label={lang.confirm[getItem("language") as "pt" | "en"]} onClick={handleConfirm} className="ml-2 bg-green-600" />
       </div>
     </AppModal>
   );

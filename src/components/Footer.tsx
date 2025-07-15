@@ -3,11 +3,7 @@ import logo from '../assets/logo_nautidesk_white.png';
 const Footer = () => {
   return (
     <div
-      className="text-sm font-semibold flex justify-between px-4 sm:px-8 py-1 mt-auto w-full"
-      style={{
-        backgroundColor: '#f8f9fa',
-        color: '#4b5c6b',
-      }}
+      className="text-sm font-semibold flex justify-between px-4 sm:px-8 py-1 mt-auto w-full dark:bg-gray-800 dark:text-white text-gray-700"
     >
       <div className="flex items-center gap-2">
         <img src={logo} alt="" width={25} height={20} className="object-contain" />

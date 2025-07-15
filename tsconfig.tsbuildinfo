@@ -1,0 +1,1 @@
+{"root":["./src/vite-env.d.ts","./src/hooks/uselocalstorage.ts","./src/app.tsx","./src/main.tsx","./src/components/cartgroup.tsx","./src/components/cartitem.tsx","./src/components/cartlist.tsx","./src/components/footer.tsx","./src/components/maincontent.tsx","./src/components/newitemform.tsx","./src/components/resetcartconfirmation.tsx"],"version":"5.8.3"}

@@ -55,6 +55,8 @@ const MainContent = () => {
       <AppTable
         key={updateKey}
         data={orderedCartItems || []}
+        tableContentClassName='dark:bg-gray-700 dark:text-gray-200'
+        stripeClassName='dark:bg-gray-600 dark:text-gray-200'
         columns={[
           { header: 'Nome', accessor: 'name', align: 'center' },
           { header: 'Preço', accessor: 'price', align: 'center', type: 'currency' },
@@ -83,7 +85,7 @@ const MainContent = () => {
             accessor: '',
             align: 'center',
             cell: (row: CartItem) => (
-              <span className="text-red-500 hover:underline underline-offset-2 cursor-pointer" onClick={() => handleRemoveItem(row)}>
+              <span className="text-red-700 hover:underline underline-offset-2 cursor-pointer" onClick={() => handleRemoveItem(row)}>
                 Remover
               </span>
             ),

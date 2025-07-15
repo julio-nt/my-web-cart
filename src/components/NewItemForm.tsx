@@ -51,18 +51,20 @@ const NewItemForm = ({ open, onClose }: IProps) => {
     form.reset();
   };
 
+  const inputClassName = "dark:text-gray-200 dark:bg-gray-700 border border-gray-400 dark:border-none";
+
   return (
     <AppModal
-      className="bg-white dark:bg-gray-700 dark:text-white"
+      className="bg-white dark:bg-gray-800 dark:text-white sm:w-xs md:w-sm"
       header="Novo Item"
       open={openModal}
       onHide={() => setOpenModal(false)}
       closable={false}
     >
       <form className="space-y-4">
-        <ControlledText label="Nome do Item" name="item" control={form.control} className="dark:text-black" />
-        <ControlledText label="Preço" name="price" control={form.control} type="currency" className="dark:text-black" />
-        <ControlledText label="Quantidade" name="quantity" control={form.control} onlyNumber maxLength={4} className="dark:text-black" />
+        <ControlledText label="Nome do Item" name="item" control={form.control} className={inputClassName} />
+        <ControlledText label="Preço" name="price" control={form.control} type="currency" className={inputClassName} />
+        <ControlledText label="Quantidade" name="quantity" control={form.control} onlyNumber maxLength={4} className={inputClassName} />
         <p>Total: R$ {totalPrice?.toFixed(2) || "0,00"}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <AppButton label="Fechar" className="bg-red-600" onClick={onClose} />

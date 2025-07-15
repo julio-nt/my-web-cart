@@ -2,12 +2,13 @@ import { useMoment } from '@ntdsk/react-ui';
 
 export type CartItem = { name: string; price: number; quantity: number };
 export type Cart = { id: number; item: CartItem[] };
-type LocalStorageFields = 'session' | 'name' | 'cart';
+type LocalStorageFields = 'session' | 'name' | 'cart' | 'theme';
 
 type LocalStorage = {
   session: Date;
   name?: string;
   cart: Cart[];
+  theme?: 'light' | 'dark';
 };
 
 type GetItemResult = LocalStorage | Date | string | Cart[] | undefined;

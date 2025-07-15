@@ -1,24 +1,28 @@
-import useLocalStorage, { Cart, CartItem } from '../hooks/useLocalStorage';
-import { AppButton, AppTable, ControlledText, normalizeText } from '@ntdsk/react-ui';
-import { useState } from 'react';
-import NewItemForm from './NewItemForm';
-import { useForm } from 'react-hook-form';
+import useLocalStorage, { Cart, CartItem } from "../hooks/useLocalStorage";
+import { AppButton, AppTable, ControlledText, normalizeText } from "@ntdsk/react-ui";
+import { useState } from "react";
+import NewItemForm from "./NewItemForm";
+import { useForm } from "react-hook-form";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 const MainContent = () => {
   const { getItem, saveCartItem, removeCartItem, resetCart } = useLocalStorage();
-  const [openModal, setOpenModal] = useState(false);
+
+  const [openForm, setOpenForm] = useState(false);
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+
   const [updateKey, setUpdateKey] = useState(0);
 
-  const cartGroups = (getItem('cart') as Cart[]) || [];
+  const cartGroups = (getItem("cart") as Cart[]) || [];
   const currentCart = cartGroups.length > 0 ? cartGroups[0] : null;
 
   const filter = useForm({
     defaultValues: {
-      name: '',
+      name: "",
     },
   });
 
-  const filteredCartItems = currentCart?.item.filter((item) => normalizeText(item.name).includes(normalizeText(filter.watch('name')))) || [];
+  const filteredCartItems = currentCart?.item.filter((item) => normalizeText(item.name).includes(normalizeText(filter.watch("name")))) || [];
   const orderedCartItems = filteredCartItems.sort((a, b) => a.name.localeCompare(b.name));
 
   const handleQuantityChange = (item: CartItem, increment: boolean) => {
@@ -37,33 +41,40 @@ const MainContent = () => {
   };
 
   const handleRemoveItem = (item: CartItem) => {
-    removeCartItem({ key: 'cart', name: item.name, groupId: currentCart?.id || 1 });
+    removeCartItem({ key: "cart", name: item.name, groupId: currentCart?.id || 1 });
     setUpdateKey((prev) => prev + 1);
   };
 
   const handleResetCart = () => {
     resetCart();
     setUpdateKey((prev) => prev + 1);
+    setOpenConfirmation(false);
   };
 
   return (
     <div className="flex flex-col gap-4 items-center w-full max-w-[1200px] mx-auto py-8 px-4">
       <h1 className="text-3xl font-semibold dark:text-white">My Web Cart</h1>
-      <AppButton label="Iniciar Novo Carrinho" style={{ width: 180 }} onClick={handleResetCart} />
-      <AppButton label="Adicionar Item" style={{ width: 180, marginLeft: 'auto' }} onClick={() => setOpenModal(true)} />
-      <ControlledText label="Pesquisar" name="name" control={filter.control} containerClassName="dark:text-gray-200 mr-auto" className="dark:text-gray-200 dark:bg-gray-700 border border-gray-400 dark:border-none" />
+      <AppButton label="Iniciar Novo Carrinho" style={{ width: 180 }} onClick={() => setOpenConfirmation(true)} />
+      <AppButton label="Adicionar Item" style={{ width: 180, marginLeft: "auto" }} onClick={() => setOpenForm(true)} />
+      <ControlledText
+        label="Pesquisar"
+        name="name"
+        control={filter.control}
+        containerClassName="dark:text-gray-200 mr-auto"
+        className="dark:text-gray-200 dark:bg-gray-700 border border-gray-400 dark:border-none"
+      />
       <AppTable
         key={updateKey}
         data={orderedCartItems || []}
-        tableContentClassName='dark:bg-gray-700 dark:text-gray-200'
-        stripeClassName='dark:bg-gray-600 dark:text-gray-200'
+        tableContentClassName="dark:bg-gray-700 dark:text-gray-200"
+        stripeClassName="dark:bg-gray-600 dark:text-gray-200"
         columns={[
-          { header: 'Nome', accessor: 'name', align: 'center' },
-          { header: 'Preço', accessor: 'price', align: 'center', type: 'currency' },
+          { header: "Nome", accessor: "name", align: "center" },
+          { header: "Preço", accessor: "price", align: "center", type: "currency" },
           {
-            header: 'Quantidade',
-            accessor: 'quantity',
-            align: 'center',
+            header: "Quantidade",
+            accessor: "quantity",
+            align: "center",
             cell: (row: CartItem) => {
               return (
                 <div className="flex gap-2 justify-around">
@@ -75,15 +86,15 @@ const MainContent = () => {
             },
           },
           {
-            header: 'Total',
-            accessor: 'total',
-            align: 'center',
+            header: "Total",
+            accessor: "total",
+            align: "center",
             cell: (row: CartItem) => `R$ ${(row?.price * row?.quantity).toFixed(2)}`,
           },
           {
-            header: '',
-            accessor: '',
-            align: 'center',
+            header: "",
+            accessor: "",
+            align: "center",
             cell: (row: CartItem) => (
               <span className="text-red-700 hover:underline underline-offset-2 cursor-pointer" onClick={() => handleRemoveItem(row)}>
                 Remover
@@ -92,8 +103,11 @@ const MainContent = () => {
           },
         ]}
       />
-      <p className="text-xl font-semibold self-start dark:text-gray-200">Total: R$ {currentCart?.item.reduce((acc, curr) => acc + curr.price * curr.quantity, 0).toFixed(2) || '0,00'}</p>
-      <NewItemForm open={openModal} onClose={() => setOpenModal(false)} />
+      <p className="text-xl font-semibold self-start dark:text-gray-200">
+        Total: R$ {currentCart?.item.reduce((acc, curr) => acc + curr.price * curr.quantity, 0).toFixed(2) || "0,00"}
+      </p>
+      <NewItemForm open={openForm} onClose={() => setOpenForm(false)} />
+      <ConfirmationDialog openModal={openConfirmation} setOpenModal={setOpenConfirmation} handleConfirm={handleResetCart} />
     </div>
   );
 };

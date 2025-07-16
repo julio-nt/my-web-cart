@@ -109,7 +109,8 @@ const MainContent = () => {
         ]}
       />
       <p className="text-xl font-semibold self-start dark:text-gray-200">
-        Total: R$ {currentCart?.item.reduce((acc, curr) => acc + curr.price * curr.quantity, 0).toFixed(2) || "0,00"}
+        Total: {lang.currency[getItem("language") as "pt" | "en"]}{" "}
+        {currentCart?.item.reduce((acc, curr) => acc + curr.price * curr.quantity, 0).toFixed(2) || "0,00"}
       </p>
       <NewItemForm open={openForm} onClose={() => setOpenForm(false)} />
       <ConfirmationDialog openModal={openConfirmation} setOpenModal={setOpenConfirmation} handleConfirm={handleResetCart} />

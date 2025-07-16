@@ -84,7 +84,9 @@ const NewItemForm = ({ open, onClose }: IProps) => {
           maxLength={4}
           className={inputClassName}
         />
-        <p>Total: R$ {totalPrice?.toFixed(2) || "0,00"}</p>
+        <p>
+          Total: {lang.currency[getItem("language") as "pt" | "en"]} {totalPrice?.toFixed(2) || "0,00"}
+        </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <AppButton label={lang.cancel[getItem("language") as "pt" | "en"]} className="bg-red-600" onClick={onClose} />
           <AppButton label={lang.confirm[getItem("language") as "pt" | "en"]} className="bg-green-600" onClick={handleSave} />

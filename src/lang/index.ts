@@ -27,10 +27,6 @@ export const lang = {
         en: "Price",
         pt: "Preço",
       },
-      currency: {
-        en: "$",
-        pt: "R$",
-      },
     },
   },
   search: {
@@ -64,5 +60,9 @@ export const lang = {
   cancel: {
     pt: "Cancelar",
     en: "Cancel",
+  },
+  currency: {
+    en: "$",
+    pt: "R$",
   },
 };

@@ -11,7 +11,6 @@ function App() {
   const [language, setLanguage] = useState(getItem("language") === "en" ? "en" : "pt");
 
   useEffect(() => {
-    console.log("AAA", isDarkMode);
     setItem({ key: "theme", value: isDarkMode ? "dark" : "light" });
   }, [isDarkMode]);
 
